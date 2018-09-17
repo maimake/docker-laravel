@@ -117,6 +117,7 @@ php${PHPVER}w-pear \
 php${PHPVER}w-intl \
 php${PHPVER}w-mbstring \
 php${PHPVER}w-mcrypt \
+php${PHPVER}w-bcmath \
 php${PHPVER}w-opcache \
 php${PHPVER}w-pecl-xdebug \
 nginx \
