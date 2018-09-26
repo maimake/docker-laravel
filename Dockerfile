@@ -53,22 +53,15 @@ RUN gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org
 
 
 # install pip
-RUN curl https://bootstrap.pypa.io/get-pip.py | python \
-&& mkdir -p ~/.pip \
-&& echo $'[global] \n\
-trusted-host = mirrors.aliyun.com \n\
-index-url = http://mirrors.aliyun.com/pypi/simple/' \
-> ~/.pip/pip.conf
-
+RUN curl https://bootstrap.pypa.io/get-pip.py | python
+ADD pip.conf /root/.pip/pip.conf
 
 # install nodejs
 RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash - \
 && rm -rf /var/lib/yum/history/*.sqlite \
 && yum -y install nodejs && yum clean all \
-&& echo $'registry = https://registry.npm.taobao.org/ \n\
-sass_binary_site = https://npm.taobao.org/mirrors/node-sass/' \
-> ~/.npmrc \
 && npm install -g cnpm yarn
+ADD .npmrc /root/.npmrc
 
 
 # 设置时区
