@@ -105,7 +105,7 @@ RUN rpm --import /etc/pki/rpm-gpg/* \
 && yum -y install \
 php${PHPVER}w \
 php${PHPVER}w-fpm \
-php${PHPVER}w-mysql \
+php${PHPVER}w-mysqlnd \
 php${PHPVER}w-pear \
 php${PHPVER}w-intl \
 php${PHPVER}w-mbstring \
