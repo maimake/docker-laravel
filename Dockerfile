@@ -1,18 +1,6 @@
 FROM centos:7
 
-RUN sed -i 's/enabled=1/enabled=0/' /etc/yum/pluginconf.d/fastestmirror.conf
-
-# ADD CentOS7-Base-163.repo /etc/yum.repos.d/CentOS-Base.repo
-ADD CentOS7-Base-ustc.repo /etc/yum.repos.d/CentOS-Base.repo
-ADD rpm-gpg /etc/pki/rpm-gpg
-
-RUN rpm --import /etc/pki/rpm-gpg/* \
-&& yum -y install --setopt=tsflags=nodocs epel-release \
-&& sed -e 's!^mirrorlist=!#mirrorlist=!g' \
-         -e 's!^#baseurl=!baseurl=!g' \
-         -e 's!//download\.fedoraproject\.org/pub!//mirrors.ustc.edu.cn!g' \
-         -e 's!http://mirrors\.ustc!https://mirrors.ustc!g' \
-         -i /etc/yum.repos.d/epel.repo /etc/yum.repos.d/epel-testing.repo \
+RUN yum -y install --setopt=tsflags=nodocs epel-release \
 && yum -y update \
 && yum -y install --setopt=tsflags=nodocs \
 # develop
@@ -46,12 +34,6 @@ ruby \
 curl \
 && yum clean all
 
-# ruby gem mirror
-# RUN gem sources --add https://gems.ruby-china.com/ --remove https://rubygems.org/ \
-# && gem install bundler \
-# && bundle config mirror.https://rubygems.org https://gems.ruby-china.org
-
-
 # install pip
 RUN curl https://bootstrap.pypa.io/get-pip.py | python
 ADD pip.conf /root/.pip/pip.conf
@@ -60,13 +42,11 @@ ADD pip.conf /root/.pip/pip.conf
 RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash - \
 && rm -rf /var/lib/yum/history/*.sqlite \
 && yum -y install nodejs && yum clean all \
-&& npm install -g cnpm yarn
-ADD .npmrc /root/.npmrc
-ADD .npmrc /root/.yarnrc
-
+&& npm install -g yarn
 
 # 设置时区
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo $TZ > /etc/timezone
+ARG TIME_ZONE=Asia/Shanghai
+RUN cp /usr/share/zoneinfo/${TIME_ZONE} /etc/localtime && echo ${TIME_ZONE} > /etc/timezone
 
 CMD ["/bin/sh"]
 
@@ -120,11 +100,10 @@ nginx \
 && yum clean all
 
 
-# install composer (先科学上网)
+# install composer
 RUN wget -O composer-setup.php https://install.phpcomposer.com/installer \
 && php composer-setup.php --install-dir=bin --filename=composer \
-&& rm -f composer-setup.php \
-&& composer config -g repo.packagist composer https://packagist.phpcomposer.com
+&& rm -f composer-setup.php
 
 
 ADD supervisord.d/ /etc/supervisord.d/
@@ -147,7 +126,6 @@ RUN mkdir -p /etc/pki/nginx/private/ \
 && ln -sf /dev/stdout /var/log/nginx/access.log \
 && ln -sf /dev/stderr /var/log/nginx/error.log
 
-WORKDIR /var/www/html
 ENV XDEBUG_CONFIG "remote_enable=0 remote_host=localhost remote_port=9000 idekey=PHPSTORM remote_log=/var/log/xdebug.log"
 EXPOSE 80 9000
 
