@@ -66,7 +66,7 @@ ADD .npmrc /root/.yarnrc
 
 
 # 设置时区
-RUN timedatectl set-timezone Asia/Shanghai
+RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo $TZ > /etc/timezone
 
 CMD ["/bin/sh"]
 
