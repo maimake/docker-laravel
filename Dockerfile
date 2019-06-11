@@ -62,10 +62,11 @@ RUN curl -sL https://rpm.nodesource.com/setup_10.x | bash - \
 && yum -y install nodejs && yum clean all \
 && npm install -g cnpm yarn
 ADD .npmrc /root/.npmrc
+ADD .npmrc /root/.yarnrc
 
 
 # 设置时区
-RUN cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN timedatectl set-timezone Asia/Shanghai
 
 CMD ["/bin/sh"]
 
@@ -113,6 +114,7 @@ php${PHPVER}w-mcrypt \
 php${PHPVER}w-bcmath \
 php${PHPVER}w-opcache \
 php${PHPVER}w-pecl-xdebug \
+php${PHPVER}w-pecl-mongodb \
 php${PHPVER}w-gd \
 nginx \
 && yum clean all
