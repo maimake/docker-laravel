@@ -102,7 +102,7 @@ nginx \
 
 # install composer
 RUN wget -O composer-setup.php https://install.phpcomposer.com/installer \
-&& php composer-setup.php --install-dir=bin --filename=composer \
+&& php composer-setup.php --install-dir=/usr/local/bin/ --filename=composer \
 && rm -f composer-setup.php
 
 
